@@ -30,7 +30,7 @@ public class User {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
-    @Column(name = "date_joined", updatable = false)
+    @Column(name = "date_joined", nullable = false)
     private LocalDate dateJoined;
 
     public User() {
@@ -92,6 +92,7 @@ public class User {
     public void setActive(boolean active) {
         isActive = active;
     }
+
 
     public LocalDate getDateJoined() {
         return dateJoined;

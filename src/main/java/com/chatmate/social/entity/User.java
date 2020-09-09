@@ -1,12 +1,8 @@
 package com.chatmate.social.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "user_data")
@@ -32,6 +28,13 @@ public class User {
 
     @Column(name = "date_joined", nullable = false)
     private LocalDate dateJoined;
+
+    @OneToMany(fetch=FetchType.LAZY,
+            mappedBy="user",
+            cascade= {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<Post> posts;
+
 
     public User() {
     }

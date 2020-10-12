@@ -1,59 +1,57 @@
 package com.chatmate.social.entity;
 
-import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "user_data")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
-    @Column(name = "first_name", nullable = false, length = 100)
+    private Integer userId;
+
+    @NotBlank
     private String firstName;
 
-    @Column(name = "last_name", nullable = false, length = 100)
+    @NotBlank
     private String lastName;
 
-    @Column(name = "email", nullable = false, unique = true, length = 100)
+    @NotBlank
     private String email;
 
-    @Column(name = "password", nullable = false, length = 100)
+    @NotBlank
     private String password;
 
-    @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
-    @Column(name = "date_joined", nullable = false)
-    private LocalDate dateJoined;
+    private final LocalDateTime dateJoined;
 
-    @OneToMany(fetch=FetchType.LAZY,
-            mappedBy="user",
-            cascade= {CascadeType.PERSIST, CascadeType.MERGE,
-                    CascadeType.DETACH, CascadeType.REFRESH})
-    private List<Post> posts;
-
-
-    public User() {
-    }
-
-    public User(String firstName, String lastName, String email,
-                String password, boolean isActive) {
+    public User(Integer userId, String firstName, String lastName, String email, String password) {
+        this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.isActive = isActive;
+        this.isActive = true;
+        dateJoined = LocalDateTime.now();
     }
 
-    public long getId() {
-        return id;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public LocalDateTime getDateJoined() {
+        return dateJoined;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getFirstName() {
@@ -86,35 +84,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-
-    public LocalDate getDateJoined() {
-        return dateJoined;
-    }
-
-    public void setDateJoined(LocalDate dateJoined) {
-        this.dateJoined = dateJoined;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", isActive=" + isActive +
-                ", dateJoined=" + dateJoined +
-                '}';
     }
 }

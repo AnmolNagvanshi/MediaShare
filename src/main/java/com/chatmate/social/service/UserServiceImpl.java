@@ -29,12 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(User user) {
-        return user;
-    }
-
-    @Override
-    public User registerUser(String firstName, String lastName,
-                             String email, String password) {
+        String email = user.getEmail();
         // validate email
         Pattern pattern = Pattern.compile("^(.+)@(.+)$");
         email = email.toLowerCase();
@@ -48,12 +43,12 @@ public class UserServiceImpl implements UserService {
             throw new EtAuthException("Email already in use");
         }
 
-        Integer userId = userRepository.create(firstName, lastName, email, password);
+        Long userId = userRepository.create(user);
         return userRepository.findById(userId);
     }
 
     @Override
-    public User getUser(Integer userId) {
+    public User getUser(Long userId) {
         return userRepository.findById(userId);
     }
 

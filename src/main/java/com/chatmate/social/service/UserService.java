@@ -10,10 +10,7 @@ public interface UserService {
 
     User registerUser(User user);
 
-    User registerUser(String firstName, String lastName,
-                      String email, String password);
-
-    User getUser(Integer userId);
+    User getUser(Long userId);
 
     List<User> getAllUsers();
 

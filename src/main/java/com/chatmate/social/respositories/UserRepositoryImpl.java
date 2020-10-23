@@ -4,6 +4,7 @@ import com.chatmate.social.entity.User;
 import com.chatmate.social.exceptions.EtAuthException;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -25,12 +26,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Integer create(String firstName, String lastName,
-                          String email, String password) {
+    public Long create(User user) {
         final String SQL_CREATE_USER =
                 "INSERT INTO user_data (first_name, last_name, email, password, is_active, date_joined) " +
                         "VALUES(?, ?, ?, ?, true, CURRENT_DATE)";
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
+//        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(10));
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
@@ -38,14 +38,15 @@ public class UserRepositoryImpl implements UserRepository {
                         SQL_CREATE_USER,
                         Statement.RETURN_GENERATED_KEYS
                 );
-                ps.setString(1, firstName);
-                ps.setString(2, lastName);
-                ps.setString(3, email);
-                ps.setString(4, hashedPassword);
+                ps.setString(1, user.getFirstName());
+                ps.setString(2, user.getLastName());
+                ps.setString(3, user.getEmail());
+                ps.setString(4, user.getPassword());
                 return ps;
             }, keyHolder);
 
-            return (Integer) keyHolder.getKeys().get("user_id");
+            Long id = (Long) keyHolder.getKeys().get("id");
+            return id;
 
         } catch (Exception e) {
             throw new EtAuthException("Invalid details. Failed to create account");
@@ -54,12 +55,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findByEmailAndPassword(String email, String password) {
-        final String SQL_FIND_BY_EMAIL = "SELECT user_id, first_name, last_name, email, password " +
+        final String SQL_FIND_BY_EMAIL = "SELECT id, first_name, last_name, email, password, is_active, date_joined " +
                 "FROM user_data WHERE email = ?";
-        User user = jdbcTemplate.queryForObject(SQL_FIND_BY_EMAIL, new Object[]{email}, userRowMapper());
-        if (user == null || !BCrypt.checkpw(password, user.getPassword()))
+        try {
+            User user = jdbcTemplate.queryForObject(SQL_FIND_BY_EMAIL, new Object[]{email}, userRowMapper());
+            if (user == null || !BCrypt.checkpw(password, user.getPassword()))
+                throw new EtAuthException("Invalid email/password");
+            return user;
+        } catch (EmptyResultDataAccessException e) {
             throw new EtAuthException("Invalid email/password");
-        return user;
+        }
+
     }
 
     @Override
@@ -69,29 +75,33 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findById(Integer userId) {
-        final String SQL_FIND_BY_ID = "SELECT user_id, first_name, last_name, email, password " +
-                "FROM user_data WHERE user_id = ?";
-        return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new Object[]{userId}, userRowMapper());
+    public User findById(Long userId) {
+        final String SQL_FIND_BY_ID = "SELECT id, first_name, last_name, email, password, is_active, date_joined " +
+                "FROM user_data WHERE id = ?";
+        try {
+            return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new Object[]{userId}, userRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new EtAuthException("User with id " + userId + " doesn't exist");
+        }
     }
 
     @Override
     public List<User> findAll() {
-        final String SQL_FIND_ALL_USERS = "SELECT user_id, first_name, last_name, email, password " +
+        final String SQL_FIND_ALL_USERS = "SELECT id, first_name, last_name, email, password, is_active, date_joined " +
                 "FROM user_data";
         return jdbcTemplate.query(SQL_FIND_ALL_USERS, userRowMapper());
     }
 
     private RowMapper<User> userRowMapper() {
-        return (rs, rowNum) -> {
-            return new User(
-                    rs.getInt("user_id"),
-                    rs.getString("first_name"),
-                    rs.getString("last_name"),
-                    rs.getString("email"),
-                    rs.getString("password")
-            );
-        };
+        return (rs, rowNum) -> new User(
+                rs.getLong("id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getBoolean("is_active"),
+                rs.getDate("date_joined")
+        );
     }
 
 }

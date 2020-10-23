@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface UserRepository {
 
-    Integer create(String firstName, String lastName, String email, String password);
+    Long create(User user);
 
     User findByEmailAndPassword(String email, String password);
 
     Integer getCountByEmail(String email);
 
-    User findById(Integer userId);
+    User findById(Long userId);
 
     List<User> findAll();
 

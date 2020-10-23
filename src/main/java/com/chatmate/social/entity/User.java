@@ -1,12 +1,13 @@
 package com.chatmate.social.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import javax.validation.constraints.NotBlank;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class User {
 
-    private Integer userId;
+    private Long userId;
 
     @NotBlank
     private String firstName;
@@ -22,16 +23,26 @@ public class User {
 
     private boolean isActive;
 
-    private final LocalDateTime dateJoined;
+    private Date dateJoined;
 
-    public User(Integer userId, String firstName, String lastName, String email, String password) {
+    @JsonCreator
+    public User(Long userId, String firstName, String lastName, String email, String password) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.isActive = true;
-        dateJoined = LocalDateTime.now();
+    }
+
+    public User(Long userId, String firstName, String lastName, String email, String password,
+                boolean isActive, Date dateJoined) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.isActive = isActive;
+        this.dateJoined = dateJoined;
     }
 
     public boolean isActive() {
@@ -42,15 +53,19 @@ public class User {
         isActive = active;
     }
 
-    public LocalDateTime getDateJoined() {
+    public Date getDateJoined() {
         return dateJoined;
     }
 
-    public Integer getUserId() {
+    public void setDateJoined(Date dateJoined) {
+        this.dateJoined = dateJoined;
+    }
+
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

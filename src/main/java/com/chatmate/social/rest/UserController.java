@@ -35,31 +35,24 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginUser(@RequestBody Map<String, Object> userMap) {
-        String email = (String) userMap.get("email");
-        String password = (String) userMap.get("password");
+    public ResponseEntity<Map<String, String>> loginUser(@RequestBody Map<String, String> userMap) {
+        String email = userMap.get("email");
+        String password = userMap.get("password");
 
         User user = userService.validateUser(email, password);
-
-//        Map<String, String> responseMap = new HashMap<>();
-//        responseMap.put("message", "loggedIn successfully");
 
         return new ResponseEntity<>(generateJwtToken(user), HttpStatus.OK);
     }
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerUser(@NotNull @Valid @RequestBody User user) {
-
         User newUser = userService.registerUser(user);
-
-//        Map<String, String> responseMap = new HashMap<>();
-//        responseMap.put("message", "registered successfully");
 
         return new ResponseEntity<>(generateJwtToken(newUser), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}")
-    public User getUser(@PathVariable Integer userId) {
+    public User getUser(@PathVariable @NotNull Long userId) {
         return userService.getUser(userId);
     }
 

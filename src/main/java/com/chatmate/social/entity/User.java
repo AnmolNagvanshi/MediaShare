@@ -3,13 +3,15 @@ package com.chatmate.social.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class User {
 
     private Long userId;
 
-    @NotBlank
+    @NotNull(message = "cannot be null")
+    @NotBlank(message = "cannot be empty")
     private String firstName;
 
     @NotBlank

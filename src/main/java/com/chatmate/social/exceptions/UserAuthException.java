@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class EtAuthException extends RuntimeException {
+public class UserAuthException extends RuntimeException {
 
-    public EtAuthException(String message) {
+    public UserAuthException(String message) {
         super(message);
     }
 

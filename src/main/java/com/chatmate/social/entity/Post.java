@@ -13,4 +13,8 @@ public class Post {
 
     private Long userId;
 
+    private Long likeCount;
+
+    private Long commentCount;
+
 }

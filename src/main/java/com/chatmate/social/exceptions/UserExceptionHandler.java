@@ -6,7 +6,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
 public class UserExceptionHandler {
@@ -33,7 +32,7 @@ public class UserExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(EtAuthException e) {
+    public ResponseEntity<ErrorResponse> handleException(UserAuthException e) {
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
                 e.getMessage(),

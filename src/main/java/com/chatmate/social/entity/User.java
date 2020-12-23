@@ -1,14 +1,23 @@
 package com.chatmate.social.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+@Getter @Setter @ToString
+@Entity
+@Table(name = "user_data")
 public class User {
 
-    private Long userId;
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull(message = "cannot be null")
     @NotBlank(message = "cannot be empty")
@@ -27,79 +36,27 @@ public class User {
 
     private Date dateJoined;
 
+    public User() {
+
+    }
+
     @JsonCreator
-    public User(Long userId, String firstName, String lastName, String email, String password) {
-        this.userId = userId;
+    public User(Long id, String firstName, String lastName, String email, String password) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
 
-    public User(Long userId, String firstName, String lastName, String email, String password,
+    public User(Long id, String firstName, String lastName, String email, String password,
                 boolean isActive, Date dateJoined) {
-        this.userId = userId;
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.isActive = isActive;
         this.dateJoined = dateJoined;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public Date getDateJoined() {
-        return dateJoined;
-    }
-
-    public void setDateJoined(Date dateJoined) {
-        this.dateJoined = dateJoined;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

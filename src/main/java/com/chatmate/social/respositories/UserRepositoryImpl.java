@@ -1,7 +1,7 @@
 package com.chatmate.social.respositories;
 
 import com.chatmate.social.entity.User;
-import com.chatmate.social.exceptions.EtAuthException;
+import com.chatmate.social.exceptions.UserAuthException;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -47,9 +47,8 @@ public class UserRepositoryImpl implements UserRepository {
 
             Long id = (Long) keyHolder.getKeys().get("id");
             return id;
-
         } catch (Exception e) {
-            throw new EtAuthException("Invalid details. Failed to create account");
+            throw new UserAuthException("Invalid details. Failed to create account");
         }
     }
 
@@ -60,10 +59,10 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             User user = jdbcTemplate.queryForObject(SQL_FIND_BY_EMAIL, new Object[]{email}, userRowMapper());
             if (user == null || !BCrypt.checkpw(password, user.getPassword()))
-                throw new EtAuthException("Invalid email/password");
+                throw new UserAuthException("Invalid email/password");
             return user;
         } catch (EmptyResultDataAccessException e) {
-            throw new EtAuthException("Invalid email/password");
+            throw new UserAuthException("Invalid email/password");
         }
 
     }
@@ -81,7 +80,7 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new Object[]{userId}, userRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            throw new EtAuthException("User with id " + userId + " doesn't exist");
+            throw new UserAuthException("User with id " + userId + " doesn't exist");
         }
     }
 

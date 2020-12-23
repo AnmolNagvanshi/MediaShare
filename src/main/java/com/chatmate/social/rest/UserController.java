@@ -40,14 +40,12 @@ public class UserController {
         String password = userMap.get("password");
 
         User user = userService.validateUser(email, password);
-
         return new ResponseEntity<>(generateJwtToken(user), HttpStatus.OK);
     }
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerUser(@NotNull @Valid @RequestBody User user) {
         User newUser = userService.registerUser(user);
-
         return new ResponseEntity<>(generateJwtToken(newUser), HttpStatus.OK);
     }
 
@@ -67,7 +65,7 @@ public class UserController {
                 .signWith(SignatureAlgorithm.HS256, Constants.API_SECRET_KEY)
                 .setIssuedAt(new Date(timestamp))
                 .setExpiration(new Date(timestamp + Constants.TOKEN_VALIDITY))
-                .claim("userId", user.getUserId())
+                .claim("userId", user.getId())
                 .claim("email", user.getEmail())
                 .claim("firstName", user.getFirstName())
                 .claim("lastName", user.getLastName())

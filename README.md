@@ -1,2 +1,2 @@
-# ChatMate
+# MediaShare
 A Social Network Website

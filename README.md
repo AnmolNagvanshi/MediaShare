@@ -1,2 +1,2 @@
 # MediaShare
-A Social Network Website
+Back-End for a Social Network Application. 
